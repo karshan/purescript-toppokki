@@ -18,7 +18,13 @@ import Unsafe.Coerce (unsafeCoerce)
 foreign import data Puppeteer :: Type
 foreign import data Browser :: Type
 foreign import data Page :: Type
+foreign import data Frame :: Type
 foreign import data ElementHandle :: Type
+foreign import data ResponseListener :: Type
+foreign import data Response :: Type
+foreign import data Request :: Type
+-- foreign import data Cookie :: Type
+type Cookie = { name :: String, value :: String }
 
 newtype URL = URL String
 derive instance newtypeURL :: Newtype URL _
@@ -26,9 +32,7 @@ derive instance newtypeURL :: Newtype URL _
 newtype Selector = Selector String
 derive instance newtypeSelector :: Newtype Selector _
 
-type LaunchOptions =
-  ( headless :: Boolean
-  )
+type LaunchOptions = ( headless :: Boolean, userDataDir :: String )
 
 launch
   :: forall options trash
@@ -168,6 +172,46 @@ getLocationRef p = Promise.toAffE $ FU.runFn1 _getLocationHref p
 unsafeEvaluateStringFunction :: String -> Page -> Aff Foreign
 unsafeEvaluateStringFunction = runPromiseAffE2 _unsafeEvaluateStringFunction
 
+setUserAgent :: String -> Page -> Aff Unit
+setUserAgent = runPromiseAffE2 _setUserAgent
+
+allowDownloads :: String -> Page -> Aff Unit
+allowDownloads = runPromiseAffE2 _allowDownloads
+
+setViewport :: forall options trash. Row.Union options trash (width :: Int, height :: Int) => { | options } -> Page -> Aff Unit
+setViewport = runPromiseAffE2 _setViewport
+
+frames :: Page -> Effect (Array Frame)
+frames = FU.runFn1 _frames
+
+name :: Frame -> Effect String
+name = FU.runFn1 _name
+
+frameWaitForSelector
+  :: forall options trash
+   . Row.Union options trash
+       ( visible :: Boolean
+       , hidden :: Boolean
+       , timeout :: Int
+       )
+  => Selector
+  -> { | options }
+  -> Frame
+  -> Aff ElementHandle
+frameWaitForSelector = runPromiseAffE3 _frameWaitForSelector
+
+frameSelect :: Selector -> Frame -> Aff ElementHandle
+frameSelect = runPromiseAffE2 _frameSelect
+
+elementClick :: ElementHandle -> Aff Unit
+elementClick = runPromiseAffE1 _elementClick
+
+pageType :: String -> Page -> Aff Unit
+pageType = runPromiseAffE2 _pageType
+
+cookies :: Page -> Aff (Array Cookie)
+cookies p = Promise.toAffE $ _cookies p
+
 runPromiseAffE1 :: forall a o. FU.Fn1 a (Effect (Promise o)) -> a -> Aff o
 runPromiseAffE1 f a = Promise.toAffE $ FU.runFn1 f a
 
@@ -196,3 +240,18 @@ foreign import _click :: FU.Fn2 Selector Page (Effect (Promise Unit))
 foreign import _waitForNavigation :: forall options. FU.Fn2 options Page (Effect (Promise Unit))
 foreign import _getLocationHref :: FU.Fn1 Page (Effect (Promise String))
 foreign import _unsafeEvaluateStringFunction :: FU.Fn2 String Page (Effect (Promise Foreign))
+foreign import _setUserAgent :: FU.Fn2 String Page (Effect (Promise Unit))
+foreign import _allowDownloads :: FU.Fn2 String Page (Effect (Promise Unit))
+foreign import _setViewport :: forall options. FU.Fn2 options Page (Effect (Promise Unit))
+foreign import _frames :: FU.Fn1 Page (Effect (Array Frame))
+foreign import _name :: FU.Fn1 Frame (Effect String)
+foreign import _frameWaitForSelector :: forall options. FU.Fn3 Selector options Frame (Effect (Promise ElementHandle))
+foreign import _frameSelect :: FU.Fn2 Selector Frame (Effect (Promise ElementHandle))
+foreign import _elementClick :: FU.Fn1 ElementHandle (Effect (Promise Unit))
+foreign import _pageType :: FU.Fn2 String Page (Effect (Promise Unit))
+foreign import _addResponseListener :: FU.Fn2 ResponseListener Page (Effect Unit)
+foreign import _removeResponseListener :: FU.Fn2 ResponseListener Page (Effect Unit)
+foreign import responseListener :: (Response -> Effect Unit) -> Page -> Effect ResponseListener
+foreign import request :: Response -> Effect Request
+foreign import reqUrl :: Request -> Effect String
+foreign import _cookies :: Page -> Effect (Promise (Array Cookie))
