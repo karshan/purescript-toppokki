@@ -185,6 +185,14 @@ exports.responseListener = function (fn) {
   };
 };
 
+exports.responseListenerRec = function (fn) {
+  return function () {
+    var f = function (event) {
+      return fn(f)(event)();
+    };
+  };
+};
+
 exports.request = function(response) {
 	return function() {
 		return response.request();
