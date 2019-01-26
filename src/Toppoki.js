@@ -116,62 +116,66 @@ exports._allowDownloads = function(downloadDir, page) {
       behavior: 'allow',
       downloadPath: downloadDir
     });
-  }
-}
+  };
+};
 
 exports._setViewport = function(options, page) {
   return function() {
     return page.setViewport(options);
   };
-}
+};
 
 exports._frames = function(page) {
   return function() {
     return page.frames();
   };
-}
+};
 
 exports._name = function(frame) {
   return function() {
     return frame.name();
   };
-}
+};
 
 exports._frameWaitForSelector = function(selector, options, frame) {
   return function() {
     return frame.waitForSelector(selector, options);
   };
-}
+};
 
 exports._frameSelect = function(selector, frame) {
   return function() {
     return frame.$(selector);
   };
-}
+};
 
 exports._elementClick = function(e) {
   return function() {
     return e.click();
   };
-}
+};
 
 exports._pageType = function(string, page) {
   return function() {
     return page.keyboard.type(string);
   };
-}
+};
 
-exports._addResponseListener = function(cb, page) {
-  return function() {
-    page.on('response', cb);
+exports.addResponseListener = function(cb) {
+  return function(page) {
+    return function() {
+      page.on('response', cb);
+    };
   };
-}
+};
 
-exports._removeResponseListener = function(cb, page) {
-  return function() {
-    page.removeListener('response', cb);
+exports.removeResponseListener = function(cb) {
+  return function(page) {
+    return function() {
+      page.removeListener('response', cb);
+    };
   };
-}
+};
 
 exports.responseListener = function (fn) {
   return function () {
@@ -184,17 +188,17 @@ exports.responseListener = function (fn) {
 exports.request = function(response) {
 	return function() {
 		return response.request();
-	}
-}
+	};
+};
 
 exports.reqUrl = function(request) {
 	return function() {
 		return request.url();
-	}
-}
+	};
+};
 
 exports._cookies = function(page) {
 	return  function() {
 		return page.cookies();
-	}
-}
+	};
+};

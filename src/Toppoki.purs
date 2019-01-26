@@ -253,8 +253,8 @@ foreign import _frameWaitForSelector :: forall options. FU.Fn3 Selector options 
 foreign import _frameSelect :: FU.Fn2 Selector Frame (Effect (Promise ElementHandle))
 foreign import _elementClick :: FU.Fn1 ElementHandle (Effect (Promise Unit))
 foreign import _pageType :: FU.Fn2 String Page (Effect (Promise Unit))
-foreign import _addResponseListener :: FU.Fn2 ResponseListener Page (Effect Unit)
-foreign import _removeResponseListener :: FU.Fn2 ResponseListener Page (Effect Unit)
+foreign import addResponseListener :: ResponseListener -> Page -> Effect Unit
+foreign import removeResponseListener :: ResponseListener -> Page -> Effect Unit
 foreign import responseListener :: (Response -> Effect Unit) -> Page -> Effect ResponseListener
 foreign import request :: Response -> Effect Request
 foreign import reqUrl :: Request -> Effect String
