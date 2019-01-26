@@ -151,6 +151,9 @@ type_ = runPromiseAffE4 _type
 click :: Selector -> Page -> Aff Unit
 click = runPromiseAffE2 _click
 
+clickElement :: ElementHandle -> Aff Unit
+clickElement = runPromiseAffE1 _clickElement
+
 foreign import data WaitUntilOption :: Type
 
 networkIdle :: WaitUntilOption
@@ -237,6 +240,7 @@ foreign import _pageWaitForSelector :: forall options. FU.Fn3 Selector options P
 foreign import _focus :: FU.Fn2 Selector Page (Effect (Promise Unit))
 foreign import _type :: forall options. FU.Fn4 Selector String options Page (Effect (Promise Unit))
 foreign import _click :: FU.Fn2 Selector Page (Effect (Promise Unit))
+foreign import _clickElement :: FU.Fn1 ElementHandle (Effect (Promise Unit))
 foreign import _waitForNavigation :: forall options. FU.Fn2 options Page (Effect (Promise Unit))
 foreign import _getLocationHref :: FU.Fn1 Page (Effect (Promise String))
 foreign import _unsafeEvaluateStringFunction :: FU.Fn2 String Page (Effect (Promise Foreign))

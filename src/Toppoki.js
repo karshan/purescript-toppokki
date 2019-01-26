@@ -78,6 +78,12 @@ exports._click = function(selector, page) {
   };
 };
 
+exports._clickElement = function(e) {
+  return function() {
+    return e.click();
+  };
+};
+
 exports._waitForNavigation = function(options, page) {
   return function() {
     return page.waitForNavigation(options);
