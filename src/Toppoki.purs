@@ -255,7 +255,7 @@ foreign import _elementClick :: FU.Fn1 ElementHandle (Effect (Promise Unit))
 foreign import _pageType :: FU.Fn2 String Page (Effect (Promise Unit))
 foreign import addResponseListener :: ResponseListener -> Page -> Effect Unit
 foreign import removeResponseListener :: ResponseListener -> Page -> Effect Unit
-foreign import responseListener :: (Response -> Effect Unit) -> Page -> Effect ResponseListener
+foreign import responseListener :: (Response -> Effect Unit) -> Effect ResponseListener
 foreign import request :: Response -> Effect Request
 foreign import reqUrl :: Request -> Effect String
 foreign import _cookies :: Page -> Effect (Promise (Array Cookie))
