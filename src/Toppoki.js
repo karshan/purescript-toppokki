@@ -190,6 +190,7 @@ exports.responseListenerRec = function (fn) {
     var f = function (event) {
       return fn(f)(event)();
     };
+    return f;
   };
 };
 
